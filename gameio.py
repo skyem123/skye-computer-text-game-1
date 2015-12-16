@@ -20,8 +20,17 @@ class FS():
     def ls(self, sub):
         raise NotImplementedError()
 
+    def path_is_dir(self, path):
+        raise NotImplementedError()
 
-class RealFS():
+    def path_exists(self, path):
+        raise NotImplementedError()
+
+    def make_dir(self, path):
+        raise NotImplementedError()
+
+
+class RealFS(FS):
     def _sanitize(self, path):
         """Converts a Unix fake path into something that can be added onto the real path without issues."""
         # Remove the slash...
@@ -39,10 +48,16 @@ class RealFS():
     def _get_real_base(self):
         raise NotImplementedError()
 
-    def ls(self, sub):
-       return os.listdir(self._sanitize(sub))
+    def ls(self, path):
+        return os.listdir(self._sanitize(path))
 
-class SaveFS(RealFS):
-    def _get_real_base(self):
-        return os.getcwd()
-    
+    def path_is_dir(self, path):
+        return os.path.isdir(self._sanitize(path))
+
+    def path_exists(self, path):
+        return os.path.exists(self._sanitize(path))
+
+    def make_dir(self, path):
+        return os.mkdir(self._sanitize(path))
+
+

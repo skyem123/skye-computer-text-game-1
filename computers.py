@@ -40,12 +40,14 @@ def path_clean(path, sep="/"):
 
 
 class Computer:
+    def get_FS(self):
+        raise NotImplementedError("Please Implement the FileSystem")
+
     def motd(self):
         return ""
 
-    def file_is_dir(self, location):
-        if location == "/":
-            return True
+    def _file_is_dir(self, location):
+        return self.get_FS().path_is_dir(location)
 
     def run_program(self, location, command, args):
         return False
@@ -60,7 +62,7 @@ class Computer:
             absolute = path_push(location, relative)
             absolute = path_clean(absolute)
             # Error checking
-            if self.file_is_dir(absolute):
+            if self._file_is_dir(absolute):
                 location = absolute
             else:
                 gameio.error("Path `" + absolute + "` is not a directory!\n")
