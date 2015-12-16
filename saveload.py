@@ -94,6 +94,8 @@ class Menu(computers.Computer):
 
     def motd(self):
         return """
+To exit, run the command `exit`.
+
 Run the command `new`, followed by a name, to start a new game.
 Run the command `ls` to list saves.
 Run the command `load`, followed by a name, to load a saved game.
