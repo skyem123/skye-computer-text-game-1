@@ -10,6 +10,17 @@ class Menu(computers.Computer):
     def _prompt(self, location):
         return "> "
 
+    def run_program(self, location, command, args):
+        if command == "ls":
+            gameio.write("TODO\n")
+        elif command == "load":
+            gameio.write("TODO\n")
+        elif command == "new":
+            gameio.write("TODO\n")
+        else:
+            return computers.Computer.run_program(self, location, command, args)
+        return True
+
     def motd(self):
         return """
 Run the command `new` to start a new game.
