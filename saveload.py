@@ -64,7 +64,7 @@ class Menu(computers.Computer):
                 return True
 
             if not load_game(computers.path_push(location, args[1])):
-                gameio.error("Game, `" + args[1] + "` could not be loaded.\n")
+                gameio.error("Could not load game, `" + args[1] + "`.\n")
             else:
                 gameio.write("\nGame `" + args[1] + "` quit.\n")
             return True
@@ -75,9 +75,9 @@ class Menu(computers.Computer):
                 return True
 
             if new_game(computers.path_push(location, args[1])):
-                gameio.write("New game, `" + args[1] + "` created.\nRun the command `load " + args[1] + "` to play!\n")
+                gameio.write("Created new game, `" + args[1] + "`.\nRun the command `load " + args[1] + "` to play!\n")
             else:
-                gameio.error("New game, `" + args[1] + "` could not be created.\n")
+                gameio.error("Could not create new game `" + args[1] + "`.\n")
             return True
         elif command == "rm":
             if len(args) <= 1:
@@ -85,9 +85,9 @@ class Menu(computers.Computer):
                 return True
 
             if rm_game(computers.path_push(location, args[1])):
-                gameio.write("Saved game, `" + args[1] + "` deleted.\n")
+                gameio.write("Deleted game, `" + args[1] + "`.\n")
             else:
-                gameio.error("Saved game, `" + args[1] + "` could not be deleted.\n")
+                gameio.error("Could not delete game, `" + args[1] + "`.\n")
         else:
             return False
         return True
