@@ -23,6 +23,22 @@ def new_game(name):
     else: return False
 
 
+def load_game(name):
+    # Is there actually a game there?
+    if not save_fs.path_is_dir(name):
+        return False
+    # If so, load it and play!
+    return True
+
+
+def rm_game(name):
+    # Is there actually a game there?
+    if not save_fs.path_is_dir(name):
+        gameio.error("Path does not exist!")
+    # If so, delete the game!
+    save_fs.rm_dir(name, recursive=True)
+    return True
+
 
 class Menu(computers.Computer):
     __filesystem = save_fs
@@ -43,16 +59,35 @@ class Menu(computers.Computer):
                     gameio.write(file + "\t")
             gameio.write("\n")
         elif command == "load":
-            gameio.write("TODO\n")
+            if len(args) <= 1:
+                gameio.error("Command `load` requires a name as it's argument.\n")
+                return True
+
+            if not load_game(computers.path_push(location, args[1])):
+                gameio.error("Game, `" + args[1] + "` could not be loaded.\n")
+            else:
+                gameio.write("\nGame `" + args[1] + "` quit.\n")
+            return True
+
         elif command == "new":
             if len(args) <= 1:
-                gameio.error("Command `new` requires a name as it's argument.")
+                gameio.error("Command `new` requires a name as it's argument.\n")
                 return True
-            if new_game(args[1]):
+
+            if new_game(computers.path_push(location, args[1])):
                 gameio.write("New game, `" + args[1] + "` created.\nRun the command `load " + args[1] + "` to play!\n")
             else:
                 gameio.error("New game, `" + args[1] + "` could not be created.\n")
             return True
+        elif command == "rm":
+            if len(args) <= 1:
+                gameio.error("Command `rm` requires a name as it's argument.\n")
+                return True
+
+            if rm_game(computers.path_push(location, args[1])):
+                gameio.write("Saved game, `" + args[1] + "` deleted.\n")
+            else:
+                gameio.error("Saved game, `" + args[1] + "` could not be deleted.\n")
         else:
             return False
         return True
@@ -60,8 +95,9 @@ class Menu(computers.Computer):
     def motd(self):
         return """
 Run the command `new`, followed by a name, to start a new game.
-Run the command `load`, followed by a name, to load a saved game from a file.
 Run the command `ls` to list saves.
+Run the command `load`, followed by a name, to load a saved game.
+Run the command `rm`, followed by a name, to delete a saved game.
 
 Remember, to save the game, you run the command `save` on your starting computer!
 """

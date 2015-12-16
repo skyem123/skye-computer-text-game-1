@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def write(text):
@@ -29,6 +30,8 @@ class FS():
     def make_dir(self, path):
         raise NotImplementedError()
 
+    def rm_dir(self, path, recursive=False):
+        raise NotImplementedError()
 
 class RealFS(FS):
     def _sanitize(self, path):
@@ -59,5 +62,12 @@ class RealFS(FS):
 
     def make_dir(self, path):
         return os.mkdir(self._sanitize(path))
+
+    def rm_dir(self, path, recursive=False):
+        path = self._sanitize(path)
+        if not recursive:
+            return os.rmdir(path)
+        else:
+            return shutil.rmtree(path)
 
 
