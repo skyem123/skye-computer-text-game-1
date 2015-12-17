@@ -84,8 +84,11 @@ class Computer:
             if len(args) > 0:
                 command = args[0]
 
+            # Comments
+            if command.lstrip().startswith('#'):
+                pass
             # Internal Commands
-            if command == "exit":
+            elif command == "exit":
                 ended = True
             elif command == "pwd":
                 gameio.write(location + "\n")
