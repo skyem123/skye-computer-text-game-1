@@ -1,6 +1,8 @@
 import computers
 import gameio
 import os
+import game
+import datetime
 
 
 class SaveFS(gameio.RealFS):
@@ -19,8 +21,16 @@ save_fs = SaveFS()
 def new_game(name):
     if not save_fs.path_exists(name):
         save_fs.make_dir(name)
-        return True
     else: return False
+    
+    saveinfo = save_fs.file_open(computers.path_push(name, "saveinfo.txt"), 'w')
+    saveinfo.write("version:" + str(game.VER_NUM) + "\n")
+    saveinfo.write("pretty_version:" + str(game.VERSION) + "\n")
+    saveinfo.write("created_as:" + name + "\n")
+    saveinfo.write("created_at:" + str(datetime.datetime.now()) + "\n")
+    saveinfo.close()
+    
+    return True
 
 
 def load_game(name):
@@ -90,7 +100,12 @@ class Menu(computers.Computer):
                 gameio.error("Command `rm` requires a name as it's argument.\n")
                 return True
 
-            if rm_game(computers.path_push(location, args[1])):
+            location = computers.path_clean(computers.path_push(location, args[1]))
+            if location == "/":
+                gameio.error("Cannot delete whole saves directory (the root directory) `/`.\n")
+                return True
+
+            if rm_game(location):
                 gameio.write("Deleted game, `" + args[1] + "`.\n")
             else:
                 gameio.error("Could not delete game, `" + args[1] + "`.\n")
@@ -98,7 +113,7 @@ class Menu(computers.Computer):
             if len(args) <= 1:
                 gameio.error("Command `mkdir` requires a folder name as it's argument.\n")
                 return True
-            location = computers.path_push(location, args[1])
+            location = computers.path_clean(computers.path_push(location, args[1]))
             if self.get_FS().path_exists(location):
                 gameio.error("Cannot create new directory, path `" + location + "` already exists.\n")
             else:

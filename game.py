@@ -1,6 +1,9 @@
 import gameio
 import saveload
 
+VER_NUM = int(0)
+VERSION = str(VER_NUM) + " experimental."
+
 
 def main():
     saveload.Menu().shell()

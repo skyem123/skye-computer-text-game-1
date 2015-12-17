@@ -33,18 +33,31 @@ class FS():
     def rm_dir(self, path, recursive=False):
         raise NotImplementedError()
 
+    def _file_open_write(self, path):
+        return NotImplementedError()
+
+    def _file_open_read(self, path):
+        return NotImplementedError()
+
+    def file_open(self, path, mode='r'):
+        if mode == 'r':
+            return self._file_open_read(path)
+        elif mode == 'w':
+            return self._file_open_write(path)
+
 
 class RealFS(FS):
     def _sanitize(self, path):
         """Converts a Unix fake path into something that can be added onto the real path without issues."""
         # Remove the slash...
-        if path[0] == "/":
+        while len(path) > 0 and path[0] == "/":
             path = path[1:]
         # Join the paths...
         path = os.path.join(self._get_real_base(), path)
         # Get the absolute path
         path = os.path.abspath(path)
         # Make sure it does not go outside of the base path!
+        #print([self._get_real_base(), path])
         if os.path.commonprefix([self._get_real_base(), path]) != self._get_real_base():
             raise Exception("Not Allowed to Escape Base Path!")
         return path
@@ -70,5 +83,11 @@ class RealFS(FS):
             return os.rmdir(path)
         else:
             return shutil.rmtree(path)
+
+    def _file_open_write(self, path):
+        return open(self._sanitize(path), 'w')
+
+    def _file_open_read(self, path):
+        return open(self._sanitize(path), 'r')
 
 
