@@ -3,7 +3,7 @@ import shutil
 
 
 def write(text):
-    if text[-1] != '\n':
+    if len(text) >= 1 and text[-1] != '\n':
         print(text, end='', flush=True)
     else:
         print(text, end='', flush=False)
@@ -13,8 +13,66 @@ def error(text):
     write(text)
 
 
+__replay_input = []
+
+
+def clear_replay():
+    global __replay_input
+    __replay_input = []
+
+
+def set_replay(replay):
+    global __replay_input
+    __replay_input = replay
+
+
+def is_replaying():
+    return len(__replay_input) > 0
+
+
+__input_log = []
+__input_logging = False
+
+
+def set_input_logging(status=None):
+    global __input_logging
+    if status is None:
+        __input_logging = not __input_logging
+    else:
+        __input_logging = not not status
+
+
+def get_input_logging():
+    return __input_logging
+
+
+def get_input_log():
+    return __input_log
+
+
+def clear_input_log(amount=-1):
+    global __input_log
+    if amount == -1:
+        __input_log = []
+    else:
+        __input_log = __input_log[:-amount]
+
+
+
 def read_line():
-    return input()
+    line = ""
+
+    if len(__replay_input) != 0:
+        line = __replay_input.pop(0)
+        write(line)
+        return line
+    else:
+        line = input()
+
+    if __input_logging:
+        __input_log.append(line)
+
+    return line
 
 
 class FS():

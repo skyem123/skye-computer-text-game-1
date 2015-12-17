@@ -1,4 +1,6 @@
 import gameio
+import saveload
+import game
 
 
 # Assumes that the path to join onto is a directory
@@ -92,3 +94,29 @@ class Computer:
             else:  # External Commands
                 if not self.run_program(location, command, args):
                     gameio.error("Command `" + command + "` not found!\n")
+
+
+class FirstComputer(Computer):
+    def motd(self):
+        return """
+Hello, I see you've got your new computer!
+
+TODO: Teach you how to use it
+"""
+
+    def run_program(self, location, command, args):
+        # The one and only special case needed for this, hopefully.
+        if command == "save":
+            # Get the log and trim the save command out!
+            gameio.clear_input_log(1)
+            input_log = gameio.get_input_log()
+            if saveload.save_game(game.now_playing, input_log):
+                gameio.write("Game saved successfully.\n")
+            else:
+                gameio.error("Game could not be saved.\n")
+            return True
+        else:
+            return Computer.run_program(self, location, command, args)
+
+    def _prompt(self, location):
+        return location + "# "
