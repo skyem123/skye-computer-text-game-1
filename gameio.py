@@ -33,6 +33,7 @@ class FS():
     def rm_dir(self, path, recursive=False):
         raise NotImplementedError()
 
+
 class RealFS(FS):
     def _sanitize(self, path):
         """Converts a Unix fake path into something that can be added onto the real path without issues."""

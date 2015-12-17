@@ -54,7 +54,13 @@ class Menu(computers.Computer):
 
     def run_program(self, location, command, args):
         if command == "ls":
-            for file in self.get_FS().ls("/"):
+            if len(args) > 1:
+                location = computers.path_push(location, args[1])
+            # To avoid crashes...
+            if not self.get_FS().path_is_dir(location):
+                gameio.error("The path `"+ location +"` is not a directory or does not exist.\n")
+                return True
+            for file in self.get_FS().ls(location):
                 if self.get_FS().path_is_dir(computers.path_push(location, file)):
                     gameio.write(file + "\t")
             gameio.write("\n")
@@ -88,6 +94,15 @@ class Menu(computers.Computer):
                 gameio.write("Deleted game, `" + args[1] + "`.\n")
             else:
                 gameio.error("Could not delete game, `" + args[1] + "`.\n")
+        elif command == "mkdir":
+            if len(args) <= 1:
+                gameio.error("Command `mkdir` requires a folder name as it's argument.\n")
+                return True
+            location = computers.path_push(location, args[1])
+            if self.get_FS().path_exists(location):
+                gameio.error("Cannot create new directory, path `" + location + "` already exists.\n")
+            else:
+                self.get_FS().make_dir(location)
         else:
             return False
         return True
