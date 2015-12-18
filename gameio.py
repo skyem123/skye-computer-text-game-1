@@ -97,11 +97,16 @@ class FS():
     def _file_open_read(self, path):
         return NotImplementedError()
 
+    def _file_open_append(self, path):
+        return NotImplementedError()
+
     def file_open(self, path, mode='r'):
         if mode == 'r':
             return self._file_open_read(path)
         elif mode == 'w':
             return self._file_open_write(path)
+        elif mode == 'a':
+            return self._file_open_append(path)
 
 
 class RealFS(FS):
@@ -147,5 +152,8 @@ class RealFS(FS):
 
     def _file_open_read(self, path):
         return open(self._sanitize(path), 'r')
+
+    def _file_open_append(self, path):
+        return open(self._sanitize(path), 'a')
 
 

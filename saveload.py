@@ -91,8 +91,9 @@ def load_game(name):
     start.shell()
     # Before we exit, make sure there is no replay!
     gameio.clear_replay()
-    # Also stop logging!
+    # Also stop logging, and clear it!
     gameio.set_input_logging(False)
+    gameio.clear_input_log()
     return True
 
 
@@ -100,7 +101,7 @@ def save_game(save_obj, input_log):
     save_obj.history = input_log
     save_obj.store(close=True,
                    info_file=save_fs.file_open(computers.path_push(save_obj.name, "saveinfo.txt"), 'w'),
-                   history_file=save_fs.file_open(computers.path_push(save_obj.name, "history.txt"), 'w'))
+                   history_file=save_fs.file_open(computers.path_push(save_obj.name, "history.txt"), 'a'))
     return True
 
 
